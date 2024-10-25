@@ -12,9 +12,4 @@ export default [
   {
     ignores: ['node_modules', 'dist', 'coverage'],
   },
-  {
-    environments: {
-      jest: true,
-    },
-  },
 ];
