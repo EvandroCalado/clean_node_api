@@ -12,4 +12,9 @@ export default [
   {
     ignores: ['node_modules', 'dist', 'coverage'],
   },
+  {
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
 ];
