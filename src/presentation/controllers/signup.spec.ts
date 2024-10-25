@@ -85,7 +85,9 @@ describe('SignUp Controller', () => {
     const httpResponse = sut.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(400);
-    expect(httpResponse.body).toEqual(new MissingParamError('passwordConfirmation'));
+    expect(httpResponse.body).toEqual(
+      new MissingParamError('passwordConfirmation'),
+    );
   });
 
   it('should return 400 BAD REQUEST if an invalid email is provided', () => {
