@@ -18,17 +18,6 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub();
 };
 
-const makeEmailValidatorWithError = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid(email: string): boolean {
-      console.log(email);
-      throw new Error();
-    }
-  }
-
-  return new EmailValidatorStub();
-};
-
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator();
 
@@ -142,8 +131,11 @@ describe('SignUp Controller', () => {
   });
 
   it('should return 500 INTERNAL SERVER ERROR if EmailValidator throws Error', () => {
-    const emailValidatorStub = makeEmailValidatorWithError();
-    const sut = new SignUpController(emailValidatorStub);
+    const { sut, emailValidatorStub } = makeSut();
+
+    vi.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+      throw new Error();
+    });
 
     const httpRequest = {
       body: {
