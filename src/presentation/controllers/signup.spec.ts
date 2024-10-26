@@ -1,9 +1,12 @@
+import { AccountModel } from '@/domain/models/account';
+import { AddAccount, AddAccountModel } from '@/domain/usecases/add-account';
 import { InvalidParamError, MissingParamError, ServerError } from '../errors';
 import { EmailValidator } from '../protocols/email-validator';
 import { SignUpController } from './signup';
 
 interface SutTypes {
   sut: SignUpController;
+  addAccountStub: AddAccount;
   emailValidatorStub: EmailValidator;
 }
 
@@ -18,12 +21,30 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub();
 };
 
+const makeAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    add(account: AddAccountModel): AccountModel {
+      console.log(account);
+      const fakeAccount = {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password',
+      };
+
+      return fakeAccount;
+    }
+  }
+
+  return new AddAccountStub();
+};
+
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator();
+  const addAccountStub = makeAddAccount();
+  const sut = new SignUpController(emailValidatorStub, addAccountStub);
 
-  const sut = new SignUpController(emailValidatorStub);
-
-  return { sut, emailValidatorStub };
+  return { sut, addAccountStub, emailValidatorStub };
 };
 
 describe('SignUp Controller', () => {
@@ -171,5 +192,27 @@ describe('SignUp Controller', () => {
     sut.handle(httpRequest);
 
     expect(isValidSpy).toHaveBeenCalledWith('valid_email');
+  });
+
+  it('should call AddAccount with correct values', () => {
+    const { sut, addAccountStub } = makeSut();
+    const addSpy = vi.spyOn(addAccountStub, 'add');
+
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password',
+      },
+    };
+
+    sut.handle(httpRequest);
+
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+    });
   });
 });
