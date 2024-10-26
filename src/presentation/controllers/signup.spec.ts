@@ -7,7 +7,7 @@ interface SutTypes {
   emailValidatorStub: EmailValidator;
 }
 
-const makeSut = (): SutTypes => {
+const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid(email: string): boolean {
       console.log(email);
@@ -15,7 +15,22 @@ const makeSut = (): SutTypes => {
     }
   }
 
-  const emailValidatorStub = new EmailValidatorStub();
+  return new EmailValidatorStub();
+};
+
+const makeEmailValidatorWithError = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid(email: string): boolean {
+      console.log(email);
+      throw new Error();
+    }
+  }
+
+  return new EmailValidatorStub();
+};
+
+const makeSut = (): SutTypes => {
+  const emailValidatorStub = makeEmailValidator();
 
   const sut = new SignUpController(emailValidatorStub);
 
@@ -108,7 +123,7 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new InvalidParamError('email'));
   });
 
-  it('should call emailValidator with correct email', () => {
+  it('should call EmailValidator with correct email', () => {
     const { sut, emailValidatorStub } = makeSut();
     const isValidSpy = vi.spyOn(emailValidatorStub, 'isValid');
 
@@ -127,14 +142,7 @@ describe('SignUp Controller', () => {
   });
 
   it('should return 500 INTERNAL SERVER ERROR if EmailValidator throws Error', () => {
-    class EmailValidatorStub implements EmailValidator {
-      isValid(email: string): boolean {
-        console.log(email);
-        throw new Error();
-      }
-    }
-
-    const emailValidatorStub = new EmailValidatorStub();
+    const emailValidatorStub = makeEmailValidatorWithError();
     const sut = new SignUpController(emailValidatorStub);
 
     const httpRequest = {
