@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    include: ['src/**/*.test.ts'],
     poolOptions: {
       threads: {
         singleThread: true,
@@ -11,7 +12,7 @@ export default defineConfig({
     },
     coverage: {
       include: ['src/**/*.ts'],
-      exclude: ['node_modules', 'dist', 'src/**/*index.ts'],
+      exclude: ['node_modules', 'dist'],
     },
   },
 });

@@ -13,6 +13,7 @@ interface SutTypes {
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid(email: string): boolean {
+      console.log('email', email);
       return true;
     }
   }
@@ -23,6 +24,7 @@ const makeEmailValidator = (): EmailValidator => {
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add(account: AddAccountModel): Promise<AccountModel> {
+      console.log('account', account);
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',
