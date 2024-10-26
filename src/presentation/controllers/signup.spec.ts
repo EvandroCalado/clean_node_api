@@ -158,7 +158,7 @@ describe('SignUp Controller', () => {
     const { sut, emailValidatorStub } = makeSut();
 
     vi.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
-      throw new Error();
+      throw new ServerError();
     });
 
     const httpRequest = {
@@ -180,7 +180,7 @@ describe('SignUp Controller', () => {
     const { sut, addAccountStub } = makeSut();
 
     vi.spyOn(addAccountStub, 'add').mockImplementationOnce(() => {
-      throw new Error();
+      throw new ServerError();
     });
 
     const httpRequest = {
