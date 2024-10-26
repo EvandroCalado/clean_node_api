@@ -5,6 +5,7 @@
   "scripts": {
     "test": "vitest",
     "test:staged": "vitest --run --passWithNoTests",
+    "test:coverage": "jest --coverage",
     "prepare": "husky"
   },
   "keywords": [],
@@ -22,6 +23,7 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.11.0",
     "vitest": "^2.1.3"
