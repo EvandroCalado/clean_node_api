@@ -27,4 +27,14 @@ describe('EmailValidator Adapter', () => {
 
     expect(isValid).toBe(true);
   });
+
+  it('should call validator with correct email', () => {
+    const sut = new EmailValidatorAdapter();
+
+    const isEmailSpy = vi.spyOn(validator, 'isEmail');
+
+    sut.isValid('valid_email@email.com');
+
+    expect(isEmailSpy).toHaveBeenCalledWith('valid_email@email.com');
+  });
 });
