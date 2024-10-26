@@ -112,22 +112,25 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new InvalidParamError('email'));
   });
 
-  it('should call EmailValidator with correct email', () => {
+  it('should return 400 BAD REQUEST if password confirmation fails', () => {
     const { sut, emailValidatorStub } = makeSut();
-    const isValidSpy = vi.spyOn(emailValidatorStub, 'isValid');
+    vi.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false);
 
     const httpRequest = {
       body: {
         name: 'valid_name',
-        email: 'valid_email',
+        email: 'invalid_email',
         password: 'valid_password',
-        passwordConfirmation: 'valid_password',
+        passwordConfirmation: 'different_valid_password',
       },
     };
 
-    sut.handle(httpRequest);
+    const httpResponse = sut.handle(httpRequest);
 
-    expect(isValidSpy).toHaveBeenCalledWith('valid_email');
+    expect(httpResponse.statusCode).toBe(400);
+    expect(httpResponse.body).toEqual(
+      new InvalidParamError('passwordConfirmation'),
+    );
   });
 
   it('should return 500 INTERNAL SERVER ERROR if EmailValidator throws Error', () => {
@@ -150,5 +153,23 @@ describe('SignUp Controller', () => {
 
     expect(httpResponse.statusCode).toBe(500);
     expect(httpResponse.body).toEqual(new ServerError());
+  });
+
+  it('should call EmailValidator with correct email', () => {
+    const { sut, emailValidatorStub } = makeSut();
+    const isValidSpy = vi.spyOn(emailValidatorStub, 'isValid');
+
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password',
+      },
+    };
+
+    sut.handle(httpRequest);
+
+    expect(isValidSpy).toHaveBeenCalledWith('valid_email');
   });
 });
