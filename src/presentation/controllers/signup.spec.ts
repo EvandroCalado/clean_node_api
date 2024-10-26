@@ -11,8 +11,8 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   class EmailValidatorStub implements EmailValidator {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     isValid(email: string): boolean {
+      console.log(email);
       return true;
     }
   }
@@ -130,8 +130,8 @@ describe('SignUp Controller', () => {
 
   it('should return 500 INTERNAL SERVER ERROR if EmailValidator throws Error', () => {
     class EmailValidatorStub implements EmailValidator {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       isValid(email: string): boolean {
+        console.log(email);
         throw new Error();
       }
     }
