@@ -237,4 +237,27 @@ describe('SignUp Controller', () => {
       password: 'valid_password',
     });
   });
+
+  it('should return 201 CREATED if valid data is provided', () => {
+    const { sut } = makeSut();
+
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password',
+      },
+    };
+
+    const httpResponse = sut.handle(httpRequest);
+
+    expect(httpResponse.statusCode).toBe(201);
+    expect(httpResponse.body).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+    });
+  });
 });
