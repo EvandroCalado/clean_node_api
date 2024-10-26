@@ -176,6 +176,28 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError());
   });
 
+  it('should return 500 INTERNAL SERVER ERROR if AddAccount throws Error', () => {
+    const { sut, addAccountStub } = makeSut();
+
+    vi.spyOn(addAccountStub, 'add').mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'invalid_email',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password',
+      },
+    };
+
+    const httpResponse = sut.handle(httpRequest);
+
+    expect(httpResponse.statusCode).toBe(500);
+    expect(httpResponse.body).toEqual(new ServerError());
+  });
+
   it('should call EmailValidator with correct email', () => {
     const { sut, emailValidatorStub } = makeSut();
     const isValidSpy = vi.spyOn(emailValidatorStub, 'isValid');
