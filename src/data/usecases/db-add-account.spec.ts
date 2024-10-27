@@ -69,24 +69,6 @@ describe('DbAddAccount UseCase', () => {
     expect(encryptSpy).toHaveBeenCalledWith(accountData.password);
   });
 
-  it('should call AddAccountRepository with correct values', async () => {
-    const { sut, encrypterStub } = makeSut();
-
-    vi.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(
-      new Promise((resolve, reject) => reject(new Error())),
-    );
-
-    const accountData = {
-      name: 'valid_name',
-      email: 'valid_email',
-      password: 'valid_password',
-    };
-
-    const promise = sut.add(accountData);
-
-    await expect(promise).rejects.toThrow();
-  });
-
   it('should throw error if Encrypter throws', async () => {
     const { sut, AddAccountRepositoryStub } = makeSut();
 
@@ -105,5 +87,41 @@ describe('DbAddAccount UseCase', () => {
       email: 'valid_email',
       password: 'hashed_password',
     });
+  });
+
+  it('should call AddAccountRepository with correct values', async () => {
+    const { sut, encrypterStub } = makeSut();
+
+    vi.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(
+      new Promise((resolve, reject) => reject(new Error())),
+    );
+
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+    };
+
+    const promise = sut.add(accountData);
+
+    await expect(promise).rejects.toThrow();
+  });
+
+  it('should throw error if AddAccountRepositoryStub throws', async () => {
+    const { sut, AddAccountRepositoryStub } = makeSut();
+
+    vi.spyOn(AddAccountRepositoryStub, 'add').mockReturnValueOnce(
+      new Promise((resolve, reject) => reject(new Error())),
+    );
+
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+    };
+
+    const promise = sut.add(accountData);
+
+    await expect(promise).rejects.toThrow();
   });
 });
